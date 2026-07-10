@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -12,33 +13,44 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({
   children,
 }: DashboardLayoutProps) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 dark:from-[#0f172a] dark:via-[#111827] dark:to-[#020617]">
-      {/* Sidebar */}
-      <motion.aside
-        initial={{ x: -80, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{
-          duration: 0.5,
-          ease: "easeOut",
+
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Mobile Sidebar */}
+      <motion.div
+        initial={false}
+        animate={{
+          x: sidebarOpen ? 0 : -300,
         }}
+        transition={{ duration: 0.3 }}
+        className="fixed left-0 top-0 z-50 h-screen lg:hidden"
       >
         <Sidebar />
-      </motion.aside>
+      </motion.div>
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:block lg:w-72">
+        <Sidebar />
+      </aside>
 
       {/* Main */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-col">
+
         {/* Header */}
-        <motion.div
-          initial={{ y: -30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{
-            delay: 0.2,
-            duration: 0.5,
-          }}
-        >
-          <Header />
-        </motion.div>
+        <Header
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
 
         {/* Content */}
         <motion.main
@@ -48,7 +60,7 @@ export default function DashboardLayout({
             delay: 0.3,
             duration: 0.6,
           }}
-          className="flex-1 overflow-y-auto p-6"
+          className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6 lg:p-8"
         >
           <div className="mx-auto w-full max-w-7xl">
             {children}
@@ -56,15 +68,7 @@ export default function DashboardLayout({
         </motion.main>
 
         {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{
-            delay: 0.5,
-          }}
-        >
-          <Footer />
-        </motion.div>
+        <Footer />
       </div>
     </div>
   );
