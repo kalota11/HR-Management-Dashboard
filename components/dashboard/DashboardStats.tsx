@@ -11,7 +11,7 @@ import StatsCard from "./StatsCard";
 
 export default function DashboardStats() {
   return (
-    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatsCard
         title="Total Employees"
         value={245}
