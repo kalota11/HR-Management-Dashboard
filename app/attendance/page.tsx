@@ -389,7 +389,7 @@ Track employee attendance, breaks and working hours
 <button
 
 className="
-bg-[#00AEEF]
+bg-[#0000ff]
 text-white
 px-6
 py-3

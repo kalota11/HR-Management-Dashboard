@@ -12,7 +12,7 @@ export default function Navbar() {
           <Menu className="h-5 w-5" />
         </button>
 
-        <h1 className="bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-2xl font-bold text-transparent">
+        <h1 className="bg-gradient-to-rfrom-cyan-500 to-blue-600 bg-clip-text text-2xl font-bold text-transparent">
           IKFTECH HRMS
         </h1>
       </div>
@@ -42,7 +42,7 @@ export default function Navbar() {
           href="/profile"
           className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:shadow-md"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-white">
+          <div className="flex h-10 w-10 items-center justify-center rounded-fullbg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-white">
             A
           </div>
 

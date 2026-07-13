@@ -16,12 +16,12 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 dark:from-[#0f172a] dark:via-[#111827] dark:to-[#020617]">
+    <div className="flex min-h-screenbg-gradient-to-br from-white via-[#F4F7FF] to-[#E6ECFF]">
 
       {/* Mobile Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-[#0000FF]/30 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -32,7 +32,9 @@ export default function DashboardLayout({
         animate={{
           x: sidebarOpen ? 0 : -300,
         }}
-        transition={{ duration: 0.3 }}
+        transition={{
+          duration: 0.3,
+        }}
         className="fixed left-0 top-0 z-50 h-screen lg:hidden"
       >
         <Sidebar />
@@ -43,7 +45,7 @@ export default function DashboardLayout({
         <Sidebar />
       </aside>
 
-      {/* Main */}
+      {/* Main Content */}
       <div className="flex min-w-0 flex-1 flex-col">
 
         {/* Header */}
@@ -52,13 +54,12 @@ export default function DashboardLayout({
           setSidebarOpen={setSidebarOpen}
         />
 
-        {/* Content */}
+        {/* Page Content */}
         <motion.main
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{
-            delay: 0.3,
-            duration: 0.6,
+            duration: 0.5,
           }}
           className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6 lg:p-8"
         >
