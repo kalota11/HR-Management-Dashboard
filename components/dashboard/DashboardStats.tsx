@@ -4,40 +4,39 @@ import {
   Users,
   Building2,
   UserCheck,
-  CalendarClock,
+  Clock3,
 } from "lucide-react";
-
 import StatsCard from "./StatsCard";
 
 export default function DashboardStats() {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
       <StatsCard
-        title="Total Employees"
+        title="Team Members"
         value={245}
         icon={Users}
-        color="bg-cyan-500"
+        color="#0000FF"
       />
 
       <StatsCard
         title="Departments"
         value={12}
         icon={Building2}
-        color="bg-blue-500"
+        color="#0000FF"
       />
 
       <StatsCard
         title="Present Today"
         value={228}
         icon={UserCheck}
-        color="bg-green-500"
+        color="#0000FF"
       />
 
       <StatsCard
-        title="Pending Leaves"
+        title="Late Today"
         value={8}
-        icon={CalendarClock}
-        color="bg-red-500"
+        icon={Clock3}
+        color="#0000FF"
       />
     </div>
   );

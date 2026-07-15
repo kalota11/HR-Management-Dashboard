@@ -91,11 +91,11 @@ export default function DepartmentTable() {
   );
 
   return (
-    <div className="bg-white rounded-2xl shadow p-4 sm:p-6">
+    <div className="bg-white rounded-2xl shadow p-4 sm:p-6 border border-blue-100">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold">Departments</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#0000ff]">Departments</h1>
           <p className="text-sm sm:text-base text-gray-500">
             Manage company departments
           </p>
@@ -106,7 +106,7 @@ export default function DepartmentTable() {
             setEditDept(null);
             setOpen(true);
           }}
-          className="bg-cyan-600 text-white px-4 sm:px-5 py-3 rounded-xl text-sm sm:text-base w-full sm:w-auto"
+          className="bg-[#0000ff] hover:bg-blue-700 transition-colors text-white px-4 sm:px-5 py-3 rounded-xl text-sm sm:text-base w-full sm:w-auto font-medium"
         >
           + Add Department
         </button>
@@ -117,28 +117,28 @@ export default function DepartmentTable() {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search department..."
-        className="w-full border rounded-xl px-4 py-3 mb-6 text-sm sm:text-base"
+        className="w-full border border-blue-200 rounded-xl px-4 py-3 mb-6 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#0000ff] focus:border-transparent"
       />
 
       {/* Desktop / tablet table view (md and up) */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="text-left border-b">
-              <th className="py-4">Department</th>
-              <th>Manager</th>
-              <th>Employees</th>
-              <th>Status</th>
-              <th>Action</th>
+            <tr className="text-left border-b border-blue-100 bg-blue-50/50">
+              <th className="py-4 px-2 text-[#0000ff]">Department</th>
+              <th className="text-[#0000ff]">Manager</th>
+              <th className="text-[#0000ff]">Employees</th>
+              <th className="text-[#0000ff]">Status</th>
+              <th className="text-[#0000ff]">Action</th>
             </tr>
           </thead>
 
           <tbody>
             {filteredDepartments.map((dept) => (
-              <tr key={dept.id} className="border-b">
-                <td className="py-4 flex gap-3 items-center">
-                  <div className="bg-cyan-100 p-2 rounded-lg shrink-0">
-                    <Building2 size={20} />
+              <tr key={dept.id} className="border-b border-blue-50 hover:bg-blue-50/40 transition-colors">
+                <td className="py-4 px-2 flex gap-3 items-center">
+                  <div className="bg-blue-100 p-2 rounded-lg shrink-0">
+                    <Building2 size={20} className="text-[#0000ff]" />
                   </div>
                   <span className="font-semibold">{dept.name}</span>
                 </td>
@@ -147,7 +147,7 @@ export default function DepartmentTable() {
                 <td>{dept.employees}</td>
 
                 <td>
-                  <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">
+                  <span className="bg-blue-100 text-[#0000ff] px-3 py-1 rounded-full text-sm">
                     {dept.status}
                   </span>
                 </td>
@@ -155,14 +155,14 @@ export default function DepartmentTable() {
                 <td className="flex gap-3 py-4">
                   <button
                     onClick={() => editDepartment(dept)}
-                    className="bg-blue-100 p-2 rounded-lg text-blue-600"
+                    className="bg-blue-100 hover:bg-blue-200 transition-colors p-2 rounded-lg text-[#0000ff]"
                   >
                     <Pencil size={18} />
                   </button>
 
                   <button
                     onClick={() => deleteDepartment(dept.id)}
-                    className="bg-red-100 p-2 rounded-lg text-red-600"
+                    className="bg-blue-50 hover:bg-red-100 transition-colors p-2 rounded-lg text-red-600"
                   >
                     <Trash2 size={18} />
                   </button>
@@ -184,16 +184,19 @@ export default function DepartmentTable() {
       {/* Mobile card view (below md) */}
       <div className="md:hidden space-y-4">
         {filteredDepartments.map((dept) => (
-          <div key={dept.id} className="border rounded-xl p-4 flex flex-col gap-3">
+          <div
+            key={dept.id}
+            className="border border-blue-100 rounded-xl p-4 flex flex-col gap-3 bg-white shadow-sm"
+          >
             <div className="flex justify-between items-start gap-3">
               <div className="flex gap-3 items-center">
-                <div className="bg-cyan-100 p-2 rounded-lg shrink-0">
-                  <Building2 size={20} />
+                <div className="bg-blue-100 p-2 rounded-lg shrink-0">
+                  <Building2 size={20} className="text-[#0000ff]" />
                 </div>
                 <span className="font-semibold">{dept.name}</span>
               </div>
 
-              <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs shrink-0">
+              <span className="bg-blue-100 text-[#0000ff] px-3 py-1 rounded-full text-xs shrink-0">
                 {dept.status}
               </span>
             </div>
@@ -212,7 +215,7 @@ export default function DepartmentTable() {
             <div className="flex gap-3 pt-1">
               <button
                 onClick={() => editDepartment(dept)}
-                className="flex-1 flex items-center justify-center gap-2 bg-blue-100 p-2 rounded-lg text-blue-600 text-sm"
+                className="flex-1 flex items-center justify-center gap-2 bg-blue-100 hover:bg-blue-200 transition-colors p-2 rounded-lg text-[#0000ff] text-sm"
               >
                 <Pencil size={16} />
                 Edit
@@ -220,7 +223,7 @@ export default function DepartmentTable() {
 
               <button
                 onClick={() => deleteDepartment(dept.id)}
-                className="flex-1 flex items-center justify-center gap-2 bg-red-100 p-2 rounded-lg text-red-600 text-sm"
+                className="flex-1 flex items-center justify-center gap-2 bg-blue-50 hover:bg-red-100 transition-colors p-2 rounded-lg text-red-600 text-sm"
               >
                 <Trash2 size={16} />
                 Delete

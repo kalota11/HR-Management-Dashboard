@@ -1,37 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { X, UserPlus } from "lucide-react";
 
 
 export interface Employee {
 
-  id: number;
-
-  name: string;
-
-  email: string;
-
-  role: string;
-
-  department: string;
-
-  status: string;
+  id:number;
+  name:string;
+  email:string;
+  role:string;
+  department:string;
+  status:string;
 
 }
 
 
+
 interface Props {
 
-  open: boolean;
+  open:boolean;
 
-  onClose: () => void;
+  onClose:()=>void;
 
-  addEmployee: (employee: Omit<Employee, "id">) => void;
+  addEmployee:(employee:Omit<Employee,"id">)=>void;
 
-  editEmployee: (employee: Omit<Employee, "id">) => void;
+  editEmployee:(employee:Employee)=>void;
 
-  selectedEmployee: Employee | null;
+  selectedEmployee:Employee|null;
 
 }
 
@@ -39,260 +35,569 @@ interface Props {
 
 export default function AddEmployeeModal({
 
-  open,
-  onClose,
-  addEmployee,
-  editEmployee,
-  selectedEmployee,
+open,
+onClose,
+addEmployee,
+editEmployee,
+selectedEmployee,
 
-}: Props) {
+}:Props){
 
 
-  const initialState: Omit<Employee,"id"> = {
 
-    name:"",
-    email:"",
-    role:"",
-    department:"IT",
-    status:"Active",
+const initialState = {
 
-  };
+name:"",
+email:"",
+role:"",
+department:"",
+status:"Active",
 
+};
 
 
-  const [formData,setFormData] = useState<Omit<Employee,"id">>(
-    initialState
-  );
 
+const [formData,setFormData]=useState(initialState);
 
 
- useEffect(() => {
-  if (!open) return;
 
-  if (selectedEmployee) {
-    setFormData({
-      name: selectedEmployee.name,
-      email: selectedEmployee.email,
-      role: selectedEmployee.role,
-      department: selectedEmployee.department,
-      status: selectedEmployee.status,
-    });
-  } else {
-    setFormData(initialState);
-  }
 
-}, [open, selectedEmployee]);
 
+useEffect(()=>{
 
 
-  if(!open) return null;
+if(selectedEmployee){
 
+setFormData({
 
+name:selectedEmployee.name,
+email:selectedEmployee.email,
+role:selectedEmployee.role,
+department:selectedEmployee.department,
+status:selectedEmployee.status,
 
+});
 
-  const handleSubmit=(e:React.FormEvent)=>{
 
-    e.preventDefault();
+}else{
 
+setFormData(initialState);
 
-    if(selectedEmployee){
+}
 
-      editEmployee(formData);
 
-    }
-    else{
+},[selectedEmployee,open]);
 
-      addEmployee(formData);
 
-    }
 
 
-    onClose();
 
-  };
 
 
 
-  return (
+const handleChange=(
 
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+e:React.ChangeEvent<
+HTMLInputElement | HTMLSelectElement
+>
 
+)=>{
 
-      <div className="w-full max-w-lg rounded-3xl bg-white p-6 shadow-xl">
 
+setFormData({
 
-        <div className="flex justify-between items-center mb-6">
+...formData,
 
+[e.target.name]:e.target.value,
 
-          <h2 className="text-2xl font-bold">
+});
 
-            {selectedEmployee 
-              ? "Edit Employee"
-              : "Add New Employee"
-            }
 
-          </h2>
+};
 
 
 
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg bg-gray-100"
-          >
 
-            <X size={20}/>
 
-          </button>
 
 
-        </div>
+const handleSubmit=()=>{
 
 
+if(
 
+!formData.name ||
+!formData.email ||
+!formData.role ||
+!formData.department
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+){
 
+alert("Please fill all fields");
 
-          <input
+return;
 
-            className="w-full border rounded-xl p-3"
+}
 
-            placeholder="Full Name"
 
-            value={formData.name}
 
-            onChange={(e)=>
 
-              setFormData({
 
-                ...formData,
 
-                name:e.target.value
+if(selectedEmployee){
 
-              })
 
-            }
+editEmployee({
 
-            required
+...selectedEmployee,
 
-          />
+...formData,
 
+});
 
 
+}else{
 
-          <input
 
-            className="w-full border rounded-xl p-3"
+addEmployee(formData);
 
-            type="email"
 
-            placeholder="Email"
+}
 
-            value={formData.email}
 
-            onChange={(e)=>
 
-              setFormData({
 
-                ...formData,
 
-                email:e.target.value
+onClose();
 
-              })
 
-            }
+};
 
-            required
 
-          />
 
 
 
 
-          <select
 
-            className="w-full border rounded-xl p-3"
+if(!open) return null;
 
-            value={formData.department}
 
-            onChange={(e)=>
 
-              setFormData({
 
-                ...formData,
 
-                department:e.target.value
 
-              })
+return (
 
-            }
+<div
 
-          >
+className="
+fixed
+inset-0
+z-50
+flex
+items-center
+justify-center
+bg-black/50
+p-4
+"
 
-            <option>IT</option>
+>
 
-            <option>HR</option>
 
-            <option>Design</option>
+<div
 
-            <option>Marketing</option>
+className="
+w-full
+max-w-xl
+rounded-3xl
+bg-white
+shadow-2xl
+overflow-hidden
+"
 
+>
 
-          </select>
 
 
 
 
-          <input
 
-            className="w-full border rounded-xl p-3"
+{/* Header */}
 
-            placeholder="Role"
 
-            value={formData.role}
+<div
 
-            onChange={(e)=>
+className="
+flex
+items-center
+justify-between
+bg-[#0000ff]
+p-5
+text-white
+"
 
-              setFormData({
+>
 
-                ...formData,
 
-                role:e.target.value
+<div className="flex items-center gap-3">
 
-              })
 
-            }
+<div
 
-            required
+className="
+rounded-xl
+bg-white
+p-3
+text-[#0000ff]
+"
 
-          />
+>
 
+<UserPlus size={24}/>
 
+</div>
 
 
-          <button
 
-            className="w-full bg-cyan-600 text-white rounded-xl py-3"
 
-            type="submit"
+<div>
 
-          >
 
-            {selectedEmployee 
-              ? "Update Employee"
-              : "Add Employee"
-            }
+<h2 className="text-xl font-bold">
 
-          </button>
+{
 
+selectedEmployee
+?
+"Edit Employee"
+:
+"Add Employee"
 
-        </form>
+}
 
+</h2>
 
-      </div>
 
+<p className="text-sm text-blue-100">
 
-    </div>
+Employee information
 
-  );
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<button
+
+onClick={onClose}
+
+className="
+rounded-xl
+p-2
+hover:bg-white/20
+transition
+"
+
+>
+
+<X/>
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+{/* Form */}
+
+
+<div
+
+className="
+grid
+grid-cols-1
+gap-5
+p-6
+md:grid-cols-2
+"
+
+>
+
+
+
+
+{
+
+[
+
+{
+label:"Full Name",
+name:"name",
+placeholder:"Ali Khan"
+},
+
+
+{
+label:"Email",
+name:"email",
+placeholder:"ali@gmail.com"
+},
+
+
+{
+label:"Role",
+name:"role",
+placeholder:"Frontend Developer"
+},
+
+
+{
+label:"Department",
+name:"department",
+placeholder:"IT"
+}
+
+
+].map((item)=>(
+
+
+<div key={item.name}>
+
+
+<label
+
+className="
+mb-2
+block
+font-semibold
+text-gray-700
+"
+
+>
+
+{item.label}
+
+</label>
+
+
+
+<input
+
+name={item.name}
+
+value={
+
+formData[
+item.name as keyof typeof formData
+]
+
+}
+
+onChange={handleChange}
+
+placeholder={item.placeholder}
+
+className="
+w-full
+rounded-xl
+border
+border-blue-200
+p-3
+outline-none
+focus:border-[#0000ff]
+focus:ring-2
+focus:ring-blue-100
+"
+
+/>
+
+
+</div>
+
+
+
+))
+
+
+}
+
+
+
+
+
+
+
+
+<div className="md:col-span-2">
+
+
+<label className="
+mb-2
+block
+font-semibold
+text-gray-700
+">
+
+Status
+
+</label>
+
+
+
+
+<select
+
+name="status"
+
+value={formData.status}
+
+onChange={handleChange}
+
+className="
+w-full
+rounded-xl
+border
+border-blue-200
+p-3
+outline-none
+focus:border-[#0000ff]
+"
+
+>
+
+
+<option>Active</option>
+
+<option>On Leave</option>
+
+<option>Inactive</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{/* Footer */}
+
+
+<div
+
+className="
+flex
+justify-end
+gap-3
+border-t
+p-5
+"
+
+>
+
+
+
+<button
+
+onClick={onClose}
+
+className="
+rounded-xl
+border
+px-6
+py-3
+font-semibold
+text-gray-600
+hover:bg-gray-100
+"
+
+>
+
+Cancel
+
+</button>
+
+
+
+
+
+
+<button
+
+onClick={handleSubmit}
+
+className="
+rounded-xl
+bg-[#0000ff]
+px-6
+py-3
+font-semibold
+text-white
+hover:bg-blue-700
+transition
+"
+
+>
+
+
+{
+
+selectedEmployee
+?
+"Update Employee"
+:
+"Save Employee"
+
+}
+
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+);
+
+
 }

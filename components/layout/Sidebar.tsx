@@ -8,83 +8,143 @@ import {
   Users,
   Building2,
   CalendarCheck,
-  CalendarDays,
-  Wallet,
   ShieldCheck,
-  Settings,
   LogOut,
 } from "lucide-react";
 
 const menuItems = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Employees", href: "/employees", icon: Users },
-  { name: "Departments", href: "/departments", icon: Building2 },
-  { name: "Attendance", href: "/attendance", icon: CalendarCheck },
-  { name: "Leave", href: "/leave", icon: CalendarDays },
-  { name: "Payroll", href: "/payroll", icon: Wallet },
-  { name: "Roles", href: "/roles", icon: ShieldCheck },
-  { name: "Settings", href: "/settings", icon: Settings },
+  {
+    name: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    name: "Team Management",
+    href: "/employees",
+    icon: Users,
+  },
+  {
+    name: "Departments",
+    href: "/departments",
+    icon: Building2,
+  },
+  {
+    name: "Attendance",
+    href: "/attendance",
+    icon: CalendarCheck,
+  },
+  {
+    name: "Roles (RBAC)",
+    href: "/roles",
+    icon: ShieldCheck,
+  },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-72 flex-col bg-gradient-to-b from-[#0F172A] via-[#1D4ED8] to-[#2563EB] text-white shadow-2xl">
+    <aside className="flex h-screen w-72 flex-col bg-[#0000FF] text-white shadow-2xl">
 
- {/* ================= Logo ================= */}
-<div className="flex justify-center py-8">
-  <div className="flex h-32 w-32 items-center justify-center rounded-full bg-transparent">
-    <Image
-      src="/ikftech-logo.png"
-      alt="IKFTech Logo"
-      width={100}
-      height={100}
-      priority
-      className="rounded-full object-cover"
-    />
-  </div>
-</div>      {/* ================= Menu ================= */}
-      <nav className="flex-1 overflow-y-auto px-4 space-y-2">
+      {/* Logo */}
+      <div className="flex justify-center py-8">
+
+        <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-white p-2 shadow-xl overflow-hidden">
+
+          <Image
+            src="/ikftech-logo.png"
+            alt="IKFTech Logo"
+            width={80}
+            height={80}
+            priority
+            className="h-full w-full rounded-2xl object-contain"
+          />
+
+        </div>
+
+      </div>
+
+      {/* Company Name */}
+
+      <div className="mb-8 text-center">
+
+        <h2 className="text-2xl font-bold tracking-wide">
+          IKFTech
+        </h2>
+
+        <p className="mt-1 text-sm text-blue-100">
+          HR Management System
+        </p>
+
+      </div>
+
+      {/* Navigation */}
+
+      <nav className="flex-1 space-y-3 px-4 overflow-y-auto">
 
         {menuItems.map((item) => {
           const Icon = item.icon;
+
           const active = pathname === item.href;
 
           return (
             <Link
               key={item.name}
               href={item.href}
-              className={`group flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 ${
-                active
-                  ? "bg-white text-blue-700 shadow-lg"
-                  : "text-white hover:bg-white/10 hover:translate-x-1"
-              }`}
-            >
-              <Icon
-                size={22}
-                className={`transition-transform duration-300 ${
-                  active
-                    ? "text-blue-700"
-                    : "text-white group-hover:scale-110"
-                }`}
-              />
+              className={`flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300
 
-              <span className="text-[16px] font-semibold tracking-wide">
+              ${
+                active
+                  ? "bg-white text-[#0000FF] shadow-xl"
+                  : "text-white hover:bg-white/20"
+              }
+              
+              `}
+            >
+
+              <Icon size={22} />
+
+              <span className="text-[16px] font-semibold">
                 {item.name}
               </span>
+
             </Link>
           );
         })}
       </nav>
 
-      {/* ================= Logout ================= */}
+      {/* Logout */}
+
       <div className="p-5">
-        <button className="flex w-full items-center gap-4 rounded-2xl border border-white/20 px-5 py-4 text-white transition-all duration-300 hover:bg-red-500 hover:border-red-500">
+
+        <button
+          className="
+          flex
+          w-full
+          items-center
+          gap-4
+          rounded-2xl
+          border
+          border-white/30
+          px-5
+          py-4
+          text-white
+          transition-all
+          duration-300
+          hover:bg-red-500
+          hover:border-red-500
+          "
+        >
           <LogOut size={22} />
-          <span className="font-semibold">Logout</span>
+
+          <span className="font-semibold">
+            Logout
+          </span>
+
         </button>
+
       </div>
+
     </aside>
   );
 }

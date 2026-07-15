@@ -16,7 +16,7 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screenbg-gradient-to-br from-white via-[#F4F7FF] to-[#E6ECFF]">
+    <div className="flex min-h-screen bg-gradient-to-br from-white via-[#F4F7FF] to-[#E6ECFF]">
 
       {/* Mobile Overlay */}
       {sidebarOpen && (
@@ -32,35 +32,29 @@ export default function DashboardLayout({
         animate={{
           x: sidebarOpen ? 0 : -300,
         }}
-        transition={{
-          duration: 0.3,
-        }}
+        transition={{ duration: 0.3 }}
         className="fixed left-0 top-0 z-50 h-screen lg:hidden"
       >
         <Sidebar />
       </motion.div>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:block lg:w-72">
+      <aside className="hidden lg:block">
         <Sidebar />
       </aside>
 
       {/* Main Content */}
       <div className="flex min-w-0 flex-1 flex-col">
 
-        {/* Header */}
         <Header
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
 
-        {/* Page Content */}
         <motion.main
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.5,
-          }}
+          transition={{ duration: 0.5 }}
           className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6 lg:p-8"
         >
           <div className="mx-auto w-full max-w-7xl">
@@ -68,7 +62,6 @@ export default function DashboardLayout({
           </div>
         </motion.main>
 
-        {/* Footer */}
         <Footer />
       </div>
     </div>
