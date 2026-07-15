@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  LogIn,
-  Coffee,
-  Clock,
-  LogOut,
-} from "lucide-react";
+import { LogIn, Coffee, Clock, LogOut } from "lucide-react";
 
 interface AttendanceState {
   checkIn: string;
@@ -33,25 +28,25 @@ export default function AttendanceStats({
     {
       title: "Check-In",
       time: attendance.checkIn,
-      icon: <LogIn size={20} />,
+      icon: <LogIn size={22} />,
       action: checkIn,
     },
     {
       title: "Break-In",
       time: attendance.breakIn,
-      icon: <Coffee size={20} />,
+      icon: <Coffee size={22} />,
       action: breakIn,
     },
     {
       title: "Break-Out",
       time: attendance.breakOut,
-      icon: <Clock size={20} />,
+      icon: <Clock size={22} />,
       action: breakOut,
     },
     {
       title: "Check-Out",
       time: attendance.checkOut,
-      icon: <LogOut size={20} />,
+      icon: <LogOut size={22} />,
       action: checkOut,
     },
   ];
@@ -67,27 +62,24 @@ export default function AttendanceStats({
     : -1;
 
   const handleClick = (index: number, action: () => void) => {
-    if (index === 0) action();
-
-    if (index === 1 && attendance.checkIn) action();
-
-    if (index === 2 && attendance.breakIn) action();
-
-    if (index === 3 && attendance.breakOut) action();
+    if (index === 0) return action();
+    if (index === 1 && attendance.checkIn) return action();
+    if (index === 2 && attendance.breakIn) return action();
+    if (index === 3 && attendance.breakOut) return action();
   };
 
   return (
-    <div className="w-full rounded-3xl border border-blue-100 bg-white p-5 sm:p-8 shadow-lg">
-      <h2 className="mb-8 sm:mb-12 text-xl sm:text-3xl font-extrabold tracking-tight text-[#0000FF]">
-        Today&apos;s Attendance
+    <div className="w-full rounded-3xl border border-blue-100 bg-white p-6 shadow-lg">
+      <h2 className="mb-10 text-3xl font-bold text-[#0000FF]">
+        Todays Attendance
       </h2>
 
-      <div className="relative w-full overflow-x-auto">
-        <div className="relative flex min-w-[420px] sm:min-w-[650px] items-start justify-between">
+      <div className="relative w-full overflow-hidden">
+        <div className="relative flex items-start justify-between">
           {/* Progress Line */}
-          <div className="absolute left-8 right-8 sm:left-12 sm:right-12 top-6 sm:top-7 h-1 rounded-full bg-blue-100">
+          <div className="absolute left-6 right-6 top-8 h-1 rounded-full bg-blue-100">
             <div
-              className="h-full rounded-full bg-[#0000FF] transition-all duration-700"
+              className="h-full rounded-full bg-[#0000FF] transition-all duration-500"
               style={{
                 width:
                   activeStep === -1
@@ -97,48 +89,50 @@ export default function AttendanceStats({
             />
           </div>
 
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              className="relative z-10 flex w-20 sm:w-32 flex-col items-center"
-            >
-              <button
-                onClick={() => handleClick(index, step.action)}
-                disabled={
-                  (index === 1 && !attendance.checkIn) ||
-                  (index === 2 && !attendance.breakIn) ||
-                  (index === 3 && !attendance.breakOut)
-                }
-                className={`
-                  flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full border-4 transition-all duration-300
+          {steps.map((step, index) => {
+            const disabled =
+              (index === 1 && !attendance.checkIn) ||
+              (index === 2 && !attendance.breakIn) ||
+              (index === 3 && !attendance.breakOut);
 
-                  ${
-                    step.time
-                      ? "border-[#0000FF] bg-[#0000FF] text-white shadow-xl"
-                      : "border-blue-200 bg-white text-blue-500"
-                  }
-
-                  ${
-                    (index === 1 && !attendance.checkIn) ||
-                    (index === 2 && !attendance.breakIn) ||
-                    (index === 3 && !attendance.breakOut)
-                      ? "cursor-not-allowed opacity-40"
-                      : "hover:scale-110 hover:shadow-xl"
-                  }
-                `}
+            return (
+              <div
+                key={index}
+                className="relative z-10 flex w-28 flex-col items-center"
               >
-                {step.icon}
-              </button>
+                <button
+                  onClick={() => handleClick(index, step.action)}
+                  disabled={disabled}
+                  className={`
+                    flex h-16 w-16 items-center justify-center rounded-full border-4
+                    transition-all duration-300
 
-              <h3 className="mt-3 sm:mt-5 text-xs sm:text-base font-bold tracking-wide text-gray-800 text-center">
-                {step.title}
-              </h3>
+                    ${
+                      step.time
+                        ? "border-[#0000FF] bg-[#0000FF] text-white shadow-lg"
+                        : "border-blue-200 bg-white text-blue-500"
+                    }
 
-              <p className="mt-1 sm:mt-2 text-xs sm:text-sm font-medium text-gray-500">
-                {step.time || "--:--"}
-              </p>
-            </div>
-          ))}
+                    ${
+                      disabled
+                        ? "cursor-not-allowed opacity-40"
+                        : "cursor-pointer hover:scale-105 hover:shadow-2xl"
+                    }
+                  `}
+                >
+                  {step.icon}
+                </button>
+
+                <h3 className="mt-4 text-base font-semibold text-gray-800 text-center">
+                  {step.title}
+                </h3>
+
+                <p className="mt-1 text-sm text-gray-500">
+                  {step.time || "--:--"}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

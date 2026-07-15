@@ -1,130 +1,168 @@
 "use client";
 
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
   ResponsiveContainer,
+  BarChart,
+  Bar,
+  CartesianGrid,
+  XAxis,
+  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 
-const data = [
-  { day: "Mon", present: 85 },
-  { day: "Tue", present: 92 },
-  { day: "Wed", present: 78 },
-  { day: "Thu", present: 95 },
-  { day: "Fri", present: 88 },
-  { day: "Sat", present: 70 },
-  { day: "Sun", present: 82 },
+const monthlyData = [
+  { month: "Jan", value: 120 },
+  { month: "Feb", value: 240 },
+  { month: "Mar", value: 180 },
+  { month: "Apr", value: 300 },
+  { month: "May", value: 210 },
+  { month: "Jun", value: 260 },
+  { month: "Jul", value: 340 },
+  { month: "Aug", value: 280 },
+  { month: "Sep", value: 390 },
+  { month: "Oct", value: 430 },
+  { month: "Nov", value: 350 },
+  { month: "Dec", value: 300 },
 ];
 
-export default function AttendanceChart() {
+const attendanceData = [
+  { name: "Present", value: 228 },
+  { name: "Leave", value: 10 },
+  { name: "Late", value: 8 },
+];
+
+const COLORS = [
+  "#2563EB",
+  "#22C55E",
+  "#F59E0B",
+];
+
+export default function DashboardCharts() {
   return (
-    <div className="rounded-3xl bg-white border border-blue-100 shadow-xl p-6">
+    <div className="grid gap-6 xl:grid-cols-3">
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+      {/* Monthly Chart */}
 
-        <div>
-          <h2 className="text-2xl font-bold text-[#0000FF]">
-            Attendance Overview
-          </h2>
+      <div className="xl:col-span-2 rounded-3xl border bg-white p-6 shadow-sm">
 
-          <p className="mt-1 text-gray-500">
-            Weekly employee attendance statistics
-          </p>
+        <div className="mb-6 flex items-center justify-between">
+
+          <div>
+
+            <h2 className="text-xl font-bold">
+              Monthly Attendance
+            </h2>
+
+            <p className="text-sm text-slate-500">
+              Employee attendance overview
+            </p>
+
+          </div>
+
         </div>
 
-        <div className="mt-4 sm:mt-0">
-          <span className="rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-[#0000FF]">
-            This Week
-          </span>
+        <div className="h-80">
+
+          <ResponsiveContainer>
+
+            <BarChart data={monthlyData}>
+
+              <CartesianGrid strokeDasharray="3 3" />
+
+              <XAxis dataKey="month" />
+
+              <Tooltip />
+
+              <Bar
+                dataKey="value"
+                radius={[8, 8, 0, 0]}
+                fill="#2563EB"
+              />
+
+            </BarChart>
+
+          </ResponsiveContainer>
+
         </div>
 
       </div>
 
-      {/* Stats */}
-      <div className="mb-8 grid grid-cols-3 gap-4">
+      {/* Pie Chart */}
 
-        <div className="rounded-2xl bg-blue-50 p-4 text-center">
-          <p className="text-sm text-gray-500">Average</p>
-          <h3 className="mt-1 text-2xl font-bold text-[#0000FF]">
-            85%
-          </h3>
+      <div className="rounded-3xl border bg-white p-6 shadow-sm">
+
+        <h2 className="text-xl font-bold">
+          Todays Attendance
+        </h2>
+
+        <p className="mb-6 text-sm text-slate-500">
+          Employee Status
+        </p>
+
+        <div className="h-72">
+
+          <ResponsiveContainer>
+
+            <PieChart>
+
+              <Pie
+                data={attendanceData}
+                dataKey="value"
+                outerRadius={90}
+              >
+
+                {attendanceData.map((entry, index) => (
+
+                  <Cell
+                    key={index}
+                    fill={COLORS[index]}
+                  />
+
+                ))}
+
+              </Pie>
+
+              <Tooltip />
+
+            </PieChart>
+
+          </ResponsiveContainer>
+
         </div>
 
-        <div className="rounded-2xl bg-blue-50 p-4 text-center">
-          <p className="text-sm text-gray-500">Highest</p>
-          <h3 className="mt-1 text-2xl font-bold text-[#0000FF]">
-            95%
-          </h3>
+        <div className="space-y-3">
+
+          {attendanceData.map((item, index) => (
+
+            <div
+              key={item.name}
+              className="flex items-center justify-between"
+            >
+
+              <div className="flex items-center gap-3">
+
+                <div
+                  className="h-3 w-3 rounded-full"
+                  style={{
+                    background: COLORS[index],
+                  }}
+                />
+
+                <span>{item.name}</span>
+
+              </div>
+
+              <span className="font-semibold">
+                {item.value}
+              </span>
+
+            </div>
+
+          ))}
+
         </div>
-
-        <div className="rounded-2xl bg-blue-50 p-4 text-center">
-          <p className="text-sm text-gray-500">Lowest</p>
-          <h3 className="mt-1 text-2xl font-bold text-[#0000FF]">
-            70%
-          </h3>
-        </div>
-
-      </div>
-
-      {/* Chart */}
-      <div className="h-80">
-
-        <ResponsiveContainer width="100%" height="100%">
-
-          <LineChart data={data}>
-
-            <CartesianGrid
-              stroke="#E5E7EB"
-              strokeDasharray="5 5"
-            />
-
-            <XAxis
-              dataKey="day"
-              tick={{
-                fill: "#64748B",
-                fontSize: 13,
-              }}
-            />
-
-            <YAxis
-              tick={{
-                fill: "#64748B",
-                fontSize: 13,
-              }}
-            />
-
-            <Tooltip
-              contentStyle={{
-                borderRadius: "14px",
-                border: "1px solid #D9E2FF",
-                background: "#fff",
-              }}
-            />
-
-            <Line
-              type="monotone"
-              dataKey="present"
-              stroke="#0000FF"
-              strokeWidth={4}
-              dot={{
-                r: 6,
-                fill: "#0000FF",
-                strokeWidth: 2,
-                stroke: "#fff",
-              }}
-              activeDot={{
-                r: 8,
-              }}
-            />
-
-          </LineChart>
-
-        </ResponsiveContainer>
 
       </div>
 

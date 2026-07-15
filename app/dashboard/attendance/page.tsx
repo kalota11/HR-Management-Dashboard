@@ -566,7 +566,6 @@ setYear={setYear}
 
 attendance={filteredAttendance}
 
-
 />
 
 

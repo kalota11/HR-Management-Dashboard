@@ -1,31 +1,34 @@
-"use client";
-
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import WelcomeBanner from "@/components/dashboard/WelcomeBanner";
 import DashboardStats from "@/components/dashboard/DashboardStats";
-import AttendanceChart from "@/components/dashboard/AttendanceChart";
+import DashboardCharts from "@/components/dashboard/DashboardCharts";
 import RecentEmployees from "@/components/dashboard/RecentEmployees";
-import DepartmentAnalytics from "@/components/dashboard/DepartmentAnalytics";
+import RecentActivity from "@/components/dashboard/RecentActivity";
+import AttendanceSummary from "@/components/dashboard/AttendanceSummary";
+import TopDepartments from "@/components/dashboard/TopDepartments";
 
 export default function DashboardPage() {
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="space-y-6">
 
-        {/* Welcome */}
-        <WelcomeBanner />
-
-        {/* Dashboard Stats */}
         <DashboardStats />
 
-        {/* Charts */}
-        <AttendanceChart />
+        <DashboardCharts />
 
-        {/* Team Management */}
-        <RecentEmployees />
+        <div className="grid gap-6 xl:grid-cols-3">
+          <div className="xl:col-span-2">
+            <RecentEmployees />
+          </div>
 
-        {/* Department Analytics */}
-        <DepartmentAnalytics />
+          <RecentActivity />
+        </div>
+        <div className="grid gap-6 xl:grid-cols-2">
+  <AttendanceSummary />
+  <TopDepartments />
+
+  {/* TopDepartments yahan aayega */}
+</div>
+
 
       </div>
     </DashboardLayout>

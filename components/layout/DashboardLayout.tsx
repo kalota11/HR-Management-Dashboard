@@ -4,7 +4,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
-import Footer from "./Footer";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -62,7 +61,6 @@ export default function DashboardLayout({
           </div>
         </motion.main>
 
-        <Footer />
       </div>
     </div>
   );

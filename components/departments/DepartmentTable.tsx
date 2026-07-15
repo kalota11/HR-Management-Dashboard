@@ -43,8 +43,8 @@ export default function DepartmentTable() {
 
   // Add Department
   const addDepartment = (data: { name: string; manager: string }) => {
-    setDepartments([
-      ...departments,
+    setDepartments((prev) => [
+      ...prev,
       {
         id: Date.now(),
         name: data.name,
@@ -57,9 +57,17 @@ export default function DepartmentTable() {
     setOpen(false);
   };
 
-  // Delete Department
+  // Delete Department (with confirmation so nothing is removed by accident)
   const deleteDepartment = (id: number) => {
-    setDepartments(departments.filter((dept) => dept.id !== id));
+    const dept = departments.find((d) => d.id === id);
+    if (!dept) return;
+
+    const confirmed = window.confirm(
+      `Delete "${dept.name}" department? This cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    setDepartments((prev) => prev.filter((d) => d.id !== id));
   };
 
   // Open Edit
@@ -70,8 +78,8 @@ export default function DepartmentTable() {
 
   // Update Department
   const updateDepartment = (data: { name: string; manager: string }) => {
-    setDepartments(
-      departments.map((dept) =>
+    setDepartments((prev) =>
+      prev.map((dept) =>
         dept.id === editDept?.id
           ? {
               ...dept,
@@ -87,7 +95,10 @@ export default function DepartmentTable() {
   };
 
   const filteredDepartments = departments.filter((dept) =>
-    [dept.name, dept.manager].join(" ").toLowerCase().includes(search.toLowerCase())
+    [dept.name, dept.manager]
+      .join(" ")
+      .toLowerCase()
+      .includes(search.toLowerCase())
   );
 
   return (
@@ -95,7 +106,9 @@ export default function DepartmentTable() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-[#0000ff]">Departments</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#0000ff]">
+            Departments
+          </h1>
           <p className="text-sm sm:text-base text-gray-500">
             Manage company departments
           </p>
@@ -125,17 +138,22 @@ export default function DepartmentTable() {
         <table className="w-full">
           <thead>
             <tr className="text-left border-b border-blue-100 bg-blue-50/50">
-              <th className="py-4 px-2 text-[#0000ff]">Department</th>
-              <th className="text-[#0000ff]">Manager</th>
-              <th className="text-[#0000ff]">Employees</th>
-              <th className="text-[#0000ff]">Status</th>
-              <th className="text-[#0000ff]">Action</th>
+              <th className="py-4 px-2 text-[#0000ff] font-semibold">
+                Department
+              </th>
+              <th className="text-[#0000ff] font-semibold">Manager</th>
+              <th className="text-[#0000ff] font-semibold">Employees</th>
+              <th className="text-[#0000ff] font-semibold">Status</th>
+              <th className="text-[#0000ff] font-semibold">Action</th>
             </tr>
           </thead>
 
           <tbody>
             {filteredDepartments.map((dept) => (
-              <tr key={dept.id} className="border-b border-blue-50 hover:bg-blue-50/40 transition-colors">
+              <tr
+                key={dept.id}
+                className="border-b border-blue-50 hover:bg-blue-50/40 transition-colors"
+              >
                 <td className="py-4 px-2 flex gap-3 items-center">
                   <div className="bg-blue-100 p-2 rounded-lg shrink-0">
                     <Building2 size={20} className="text-[#0000ff]" />
@@ -156,6 +174,7 @@ export default function DepartmentTable() {
                   <button
                     onClick={() => editDepartment(dept)}
                     className="bg-blue-100 hover:bg-blue-200 transition-colors p-2 rounded-lg text-[#0000ff]"
+                    aria-label={`Edit ${dept.name}`}
                   >
                     <Pencil size={18} />
                   </button>
@@ -163,6 +182,7 @@ export default function DepartmentTable() {
                   <button
                     onClick={() => deleteDepartment(dept.id)}
                     className="bg-blue-50 hover:bg-red-100 transition-colors p-2 rounded-lg text-red-600"
+                    aria-label={`Delete ${dept.name}`}
                   >
                     <Trash2 size={18} />
                   </button>
@@ -233,7 +253,9 @@ export default function DepartmentTable() {
         ))}
 
         {filteredDepartments.length === 0 && (
-          <p className="py-6 text-center text-gray-400">No departments found.</p>
+          <p className="py-6 text-center text-gray-400">
+            No departments found.
+          </p>
         )}
       </div>
 

@@ -1,16 +1,10 @@
 "use client";
 
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Plus } from "lucide-react";
 import { useState } from "react";
 
-interface Role {
-  id: number;
-  name: string;
-  description: string;
-  users: number;
-  permissions: number;
-  status: string;
-}
+import RoleModal, { Role } from "./AddRoleModal";
+
 
 export default function RoleTable() {
   const [roles, setRoles] = useState<Role[]>([
@@ -40,17 +34,62 @@ export default function RoleTable() {
     },
   ]);
 
+  const [openModal, setOpenModal] = useState(false);
+  const [editRole, setEditRole] = useState<Role | null>(null);
+
+  const saveRole = (role: Role) => {
+
+    if (editRole) {
+
+      setRoles(
+        roles.map((r) => (r.id === role.id ? role : r))
+      );
+
+      setEditRole(null);
+
+    } else {
+
+      setRoles([...roles, role]);
+
+    }
+
+  };
+
   const deleteRole = (id: number) => {
     setRoles(roles.filter((role) => role.id !== id));
   };
 
   return (
     <div className="bg-white rounded-2xl shadow p-4 sm:p-6 border border-blue-100">
-      <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-[#0000ff]">Roles & Permissions</h1>
-        <p className="text-sm sm:text-base text-gray-500">
-          Manage user roles and access control
-        </p>
+
+      <RoleModal
+        open={openModal}
+        onClose={() => {
+          setOpenModal(false);
+          setEditRole(null);
+        }}
+        saveRole={saveRole}
+        editRole={editRole}
+      />
+
+      <div className="mb-6 flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#0000ff]">Roles & Permissions</h1>
+          <p className="text-sm sm:text-base text-gray-500">
+            Manage user roles and access control
+          </p>
+        </div>
+
+        <button
+          onClick={() => {
+            setEditRole(null);
+            setOpenModal(true);
+          }}
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 text-sm shrink-0"
+        >
+          <Plus size={18} />
+          Add Role
+        </button>
       </div>
 
       {/* Desktop / tablet table view (md and up) */}
@@ -81,7 +120,13 @@ export default function RoleTable() {
                 </td>
 
                 <td className="flex gap-3 py-4">
-                  <button className="bg-blue-100 hover:bg-blue-200 transition-colors text-[#0000ff] p-2 rounded-lg">
+                  <button
+                    onClick={() => {
+                      setEditRole(role);
+                      setOpenModal(true);
+                    }}
+                    className="bg-blue-100 hover:bg-blue-200 transition-colors text-[#0000ff] p-2 rounded-lg"
+                  >
                     <Pencil size={18} />
                   </button>
 
@@ -133,7 +178,13 @@ export default function RoleTable() {
             </div>
 
             <div className="flex gap-3 pt-1">
-              <button className="flex-1 flex items-center justify-center gap-2 bg-blue-100 hover:bg-blue-200 transition-colors text-[#0000ff] p-2 rounded-lg text-sm">
+              <button
+                onClick={() => {
+                  setEditRole(role);
+                  setOpenModal(true);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 bg-blue-100 hover:bg-blue-200 transition-colors text-[#0000ff] p-2 rounded-lg text-sm"
+              >
                 <Pencil size={16} />
                 Edit
               </button>

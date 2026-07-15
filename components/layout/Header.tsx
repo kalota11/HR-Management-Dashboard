@@ -1,12 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import {
   Bell,
-  Search,
-  Settings,
+  Moon,
+  Sun,
   ChevronDown,
   Menu,
   X,
+  User,
+  Settings,
+  LogOut,
 } from "lucide-react";
 
 interface HeaderProps {
@@ -18,80 +22,100 @@ export default function Header({
   sidebarOpen,
   setSidebarOpen,
 }: HeaderProps) {
+  const [dark, setDark] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+
   return (
-    <header className="sticky top-0 z-50 flex h-20 items-center justify-between border-b border-blue-100 bg-white px-4 sm:px-6 lg:px-8 shadow-sm">
+    <header className="sticky top-0 z-50 flex h-20 items-center justify-between border-b border-slate-200 bg-white px-6 shadow-sm">
 
       {/* Left */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-5">
 
-        {/* Mobile Menu */}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="rounded-xl bg-[#0000FF] p-2.5 text-white transition hover:scale-105 lg:hidden"
+          className="lg:hidden rounded-xl border p-2 hover:bg-slate-100"
         >
-          {sidebarOpen ? <X size={22} /> : <Menu size={22} />}
+          {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
 
-        {/* Search */}
-        <div className="relative hidden md:block w-64 lg:w-96">
-
-          <Search
-            size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0000FF]"
-          />
-
-          <input
-            type="text"
-            placeholder="Search..."
-            className="h-11 w-full rounded-2xl border border-blue-200 bg-white pl-12 pr-4 text-sm outline-none transition-all duration-300 focus:border-[#0000FF] focus:ring-2 focus:ring-blue-200"
-          />
-
-        </div>
-
+       
       </div>
 
       {/* Right */}
       <div className="flex items-center gap-3">
 
+        {/* Dark Mode */}
+
+        <button
+          onClick={() => setDark(!dark)}
+          className="rounded-full border p-3 hover:bg-slate-100"
+        >
+          {dark ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
+
         {/* Notification */}
-        <button className="relative rounded-xl border border-blue-200 bg-white p-3 text-[#0000FF] transition hover:bg-[#0000FF] hover:text-white">
+
+        <button className="relative rounded-full border p-3 hover:bg-slate-100">
 
           <Bell size={20} />
 
-          <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-red-500"></span>
-
-        </button>
-
-        {/* Settings */}
-        <button className="hidden sm:flex rounded-xl border border-blue-200 bg-white p-3 text-[#0000FF] transition hover:bg-[#0000FF] hover:text-white">
-
-          <Settings size={20} />
+          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-orange-500"></span>
 
         </button>
 
         {/* Profile */}
-        <div className="flex items-center gap-3 rounded-2xl border border-blue-200 bg-white px-3 py-2 shadow-sm">
 
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#0000FF] text-lg font-bold text-white">
-            A
-          </div>
+        <div className="relative">
 
-          <div className="hidden lg:block">
+          <button
+            onClick={() => setProfileOpen(!profileOpen)}
+            className="flex items-center gap-3 rounded-full border px-3 py-2 hover:bg-slate-50"
+          >
 
-            <h3 className="text-sm font-bold text-gray-800">
-              Administrator
-            </h3>
+            <img
+              src="https://i.pravatar.cc/100"
+              alt=""
+              className="h-11 w-11 rounded-full"
+            />
 
-            <p className="text-xs text-gray-500">
-              HR Management System
-            </p>
+            <div className="hidden lg:block text-left">
 
-          </div>
+              <h4 className="font-semibold">
+                Administrator
+              </h4>
 
-          <ChevronDown
-            size={18}
-            className="hidden sm:block text-[#0000FF]"
-          />
+              <p className="text-xs text-gray-500">
+                Admin
+              </p>
+
+            </div>
+
+            <ChevronDown size={18} />
+
+          </button>
+
+          {profileOpen && (
+
+            <div className="absolute right-0 mt-3 w-56 rounded-2xl border bg-white p-2 shadow-xl">
+
+              <button className="flex w-full items-center gap-3 rounded-xl p-3 hover:bg-slate-100">
+                <User size={18} />
+                Profile
+              </button>
+
+              <button className="flex w-full items-center gap-3 rounded-xl p-3 hover:bg-slate-100">
+                <Settings size={18} />
+                Settings
+              </button>
+
+              <button className="flex w-full items-center gap-3 rounded-xl p-3 text-red-600 hover:bg-red-50">
+                <LogOut size={18} />
+                Logout
+              </button>
+
+            </div>
+
+          )}
 
         </div>
 
