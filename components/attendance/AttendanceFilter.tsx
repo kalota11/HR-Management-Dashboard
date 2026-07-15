@@ -22,8 +22,8 @@ export default function AttendanceFilter({
   setYear,
 }: Props) {
   return (
-    <div className="w-full rounded-3xl border border-blue-100 bg-white p-6 shadow-lg">
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="w-full rounded-3xl border border-blue-100 bg-white p-4 sm:p-6 shadow-lg">
+      <div className="grid grid-cols-1 gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {/* Search */}
         <div className="relative">
           <Search
