@@ -1,6 +1,7 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Search, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Props {
   search: string;
@@ -13,6 +14,12 @@ interface Props {
   setYear: (value: string) => void;
 }
 
+const MONTHS = [
+  "January", "February", "March", "April",
+  "May", "June", "July", "August",
+  "September", "October", "November", "December",
+];
+
 export default function AttendanceFilter({
   search,
   setSearch,
@@ -21,9 +28,43 @@ export default function AttendanceFilter({
   year,
   setYear,
 }: Props) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Year currently shown inside the popover (navigable independently of
+  // the actually-selected year, so the user can browse before picking).
+  const [viewYear, setViewYear] = useState<number>(
+    year ? Number(year) : new Date().getFullYear()
+  );
+
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // Close the popover on outside click.
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  function handleSelectMonth(m: string) {
+    setMonth(m);
+    setYear(String(viewYear));
+    setIsOpen(false);
+  }
+
+  function openPopover() {
+    setViewYear(year ? Number(year) : new Date().getFullYear());
+    setIsOpen((v) => !v);
+  }
+
+  const label = month && year ? `${month} ${year}` : "Select Month";
+
   return (
     <div className="w-full rounded-3xl border border-blue-100 bg-white p-4 sm:p-6 shadow-lg">
-      <div className="grid grid-cols-1 gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:gap-5 sm:grid-cols-2">
         {/* Search */}
         <div className="relative">
           <Search
@@ -59,72 +100,111 @@ export default function AttendanceFilter({
           />
         </div>
 
-        {/* Month */}
-        <select
-          value={month}
-          onChange={(e) => setMonth(e.target.value)}
-          className="
-            w-full
-            rounded-2xl
-            border
-            border-blue-200
-            bg-white
-            px-4
-            py-3.5
-            text-[15px]
-            font-medium
-            text-gray-700
-            outline-none
-            transition-all
-            duration-300
-            focus:border-[#0000FF]
-            focus:ring-4
-            focus:ring-blue-100
-          "
-        >
-          <option value="">Select Month</option>
-          <option value="January">January</option>
-          <option value="February">February</option>
-          <option value="March">March</option>
-          <option value="April">April</option>
-          <option value="May">May</option>
-          <option value="June">June</option>
-          <option value="July">July</option>
-          <option value="August">August</option>
-          <option value="September">September</option>
-          <option value="October">October</option>
-          <option value="November">November</option>
-          <option value="December">December</option>
-        </select>
+        {/* Calendar month/year picker */}
+        <div className="relative" ref={popoverRef}>
+          <button
+            type="button"
+            onClick={openPopover}
+            className="
+              w-full
+              flex
+              items-center
+              gap-3
+              rounded-2xl
+              border
+              border-blue-200
+              bg-white
+              px-4
+              py-3.5
+              text-left
+              text-[15px]
+              font-medium
+              text-gray-700
+              outline-none
+              transition-all
+              duration-300
+              focus:border-[#0000FF]
+              focus:ring-4
+              focus:ring-blue-100
+              hover:border-[#0000FF]
+            "
+          >
+            <Calendar size={20} className="text-[#0000FF] shrink-0" />
+            <span className={month ? "text-gray-800" : "text-gray-400"}>
+              {label}
+            </span>
+          </button>
 
-        {/* Year */}
-        <select
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
-          className="
-            w-full
-            rounded-2xl
-            border
-            border-blue-200
-            bg-white
-            px-4
-            py-3.5
-            text-[15px]
-            font-medium
-            text-gray-700
-            outline-none
-            transition-all
-            duration-300
-            focus:border-[#0000FF]
-            focus:ring-4
-            focus:ring-blue-100
-          "
-        >
-          <option value="">Select Year</option>
-          <option value="2025">2025</option>
-          <option value="2026">2026</option>
-          <option value="2027">2027</option>
-        </select>
+          {isOpen && (
+            <div
+              className="
+                absolute
+                z-20
+                mt-2
+                w-full
+                min-w-[280px]
+                rounded-2xl
+                border
+                border-blue-100
+                bg-white
+                p-4
+                shadow-xl
+              "
+            >
+              {/* Year navigation */}
+              <div className="flex items-center justify-between mb-4">
+                <button
+                  type="button"
+                  onClick={() => setViewYear((y) => y - 1)}
+                  className="p-1.5 rounded-lg hover:bg-blue-50 text-[#0000FF] transition-colors"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+
+                <span className="text-sm font-bold text-gray-800">
+                  {viewYear}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => setViewYear((y) => y + 1)}
+                  className="p-1.5 rounded-lg hover:bg-blue-50 text-[#0000FF] transition-colors"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+
+              {/* Month grid */}
+              <div className="grid grid-cols-3 gap-2">
+                {MONTHS.map((m) => {
+                  const selected = m === month && String(viewYear) === year;
+                  return (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => handleSelectMonth(m)}
+                      className={`
+                        rounded-xl
+                        px-2
+                        py-2
+                        text-xs
+                        font-semibold
+                        transition-colors
+                        ${
+                          selected
+                            ? "bg-[#0000FF] text-white"
+                            : "text-gray-600 hover:bg-blue-50"
+                        }
+                      `}
+                    >
+                      {m.slice(0, 3)}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

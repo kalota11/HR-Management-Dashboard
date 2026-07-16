@@ -60,29 +60,52 @@ export default function LoginForm() {
             professional dashboard.
           </p>
 
-          <div className="grid grid-cols-2 gap-6 mt-12">
+         <div className="mt-12 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 p-8">
 
-            <div className="bg-white/10 rounded-2xl p-6 backdrop-blur-md">
-              <h3 className="text-3xl font-bold">
-                500+
-              </h3>
+  <h3 className="text-3xl font-bold leading-tight">
+    Smart HR Platform
+  </h3>
 
-              <p className="text-blue-100 mt-2">
-                Employees
-              </p>
-            </div>
+  <p className="mt-4 text-blue-100 leading-8">
+    Experience a modern Human Resource Management System built
+    to simplify employee operations, attendance monitoring,
+    department management, and role-based access from one
+    centralized dashboard.
+  </p>
 
-            <div className="bg-white/10 rounded-2xl p-6 backdrop-blur-md">
-              <h3 className="text-3xl font-bold">
-                24
-              </h3>
+  <div className="mt-8 space-y-5">
 
-              <p className="text-blue-100 mt-2">
-                Departments
-              </p>
-            </div>
+    <div className="flex items-center gap-4">
+      <div className="h-3 w-3 rounded-full bg-white"></div>
+      <span className="text-lg text-blue-50">
+        Employee & Team Management
+      </span>
+    </div>
 
-          </div>
+    <div className="flex items-center gap-4">
+      <div className="h-3 w-3 rounded-full bg-white"></div>
+      <span className="text-lg text-blue-50">
+        Attendance & Leave Management
+      </span>
+    </div>
+
+    <div className="flex items-center gap-4">
+      <div className="h-3 w-3 rounded-full bg-white"></div>
+      <span className="text-lg text-blue-50">
+        Department & Role Management
+      </span>
+    </div>
+
+    <div className="flex items-center gap-4">
+      <div className="h-3 w-3 rounded-full bg-white"></div>
+      <span className="text-lg text-blue-50">
+        Secure, Fast & Responsive Experience
+      </span>
+    </div>
+
+  </div>
+
+</div>
         </div>
       </div>
 

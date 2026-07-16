@@ -1,19 +1,12 @@
 "use client";
 
 import {
-  Users,
   UserCheck,
   UserX,
   UserPlus,
 } from "lucide-react";
 
 const stats = [
-  {
-    title: "Total Employees",
-    value: "120",
-    icon: Users,
-    description: "All team members",
-  },
   {
     title: "Active Employees",
     value: "105",

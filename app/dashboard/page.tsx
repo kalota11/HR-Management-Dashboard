@@ -3,7 +3,6 @@ import DashboardStats from "@/components/dashboard/DashboardStats";
 import DashboardCharts from "@/components/dashboard/DashboardCharts";
 import RecentEmployees from "@/components/dashboard/RecentEmployees";
 import RecentActivity from "@/components/dashboard/RecentActivity";
-import AttendanceSummary from "@/components/dashboard/AttendanceSummary";
 import TopDepartments from "@/components/dashboard/TopDepartments";
 
 export default function DashboardPage() {
@@ -23,7 +22,6 @@ export default function DashboardPage() {
           <RecentActivity />
         </div>
         <div className="grid gap-6 xl:grid-cols-2">
-  <AttendanceSummary />
   <TopDepartments />
 
   {/* TopDepartments yahan aayega */}
