@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useEmployee } from "@/context/Employeecontext";
 
 import {
   Search,
@@ -16,48 +17,15 @@ import AddEmployeeModal, {
 } from "./AddEmployeeModal";
 
 
-const initialEmployees: Employee[] = [
-  {
-    id: 1,
-    name: "Ahmed Khan",
-    email: "ahmed@gmail.com",
-    department: "Development",
-    role: "Frontend Developer",
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "Ali Raza",
-    email: "ali@gmail.com",
-    department: "Design",
-    role: "UI Designer",
-    status: "Active",
-  },
-  {
-    id: 3,
-    name: "Sara Ahmed",
-    email: "sara@gmail.com",
-    department: "HR",
-    role: "HR Manager",
-    status: "Inactive",
-  },
-  {
-    id: 4,
-    name: "Usman Malik",
-    email: "usman@gmail.com",
-    department: "Marketing",
-    role: "Marketing Executive",
-    status: "Active",
-  },
-];
-
-
 export default function TeamTable() {
 
 
-const [employees,setEmployees] =
-useState<Employee[]>(initialEmployees);
-
+const {
+  employees,
+  addEmployee,
+  updateEmployee,
+  deleteEmployee,
+} = useEmployee();
 
 const [search,setSearch] =
 useState("");
@@ -79,51 +47,19 @@ const [viewEmployee,setViewEmployee] =
 useState<Employee | null>(null);
 
 
+const handleSaveEmployee = (employee: Employee) => {
+  if (editEmployee) {
+    updateEmployee(employee);
+    setEditEmployee(null);
+  } else {
+    addEmployee({
+      ...employee,
+      id: Date.now(),
+    });
+  }
 
-
-
-const addEmployee = (employee:Employee)=>{
-
-
-if(editEmployee){
-
-
-setEmployees(
-employees.map((emp)=>
-emp.id===employee.id
-?
-employee
-:
-emp
-)
-);
-
-
-setEditEmployee(null);
-
-
-}
-else{
-
-
-setEmployees([
-...employees,
-{
-...employee,
-id:Date.now()
-}
-]);
-
-
-}
-
-
+  setOpenModal(false);
 };
-
-
-
-
-
 
 const filteredEmployees =
 employees.filter((employee)=>{
@@ -172,7 +108,7 @@ setEditEmployee(null);
 
 }}
 
-addEmployee={addEmployee}
+addEmployee={handleSaveEmployee}
 
 editEmployee={editEmployee}
 
@@ -673,28 +609,15 @@ text-yellow-600
 
 
 <button
-
-onClick={()=>{
-
-setEmployees(
-employees.filter(
-(emp)=>emp.id!==employee.id
-)
-);
-
-}}
-
-className="
-p-2
-rounded-lg
-hover:bg-red-100
-text-red-600
-"
-
+  onClick={() => deleteEmployee(employee.id)}
+  className="
+    p-2
+    rounded-lg
+    hover:bg-red-100
+    text-red-600
+  "
 >
-
-<Trash2 size={18}/>
-
+  <Trash2 size={18} />
 </button>
 
 

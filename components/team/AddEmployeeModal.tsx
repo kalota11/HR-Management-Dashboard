@@ -10,9 +10,8 @@ export interface Employee {
   email: string;
   department: string;
   role: string;
-  status: string;
+  status: "Active" | "Inactive";
 }
-
 
 interface Props {
   open: boolean;
@@ -22,14 +21,13 @@ interface Props {
 }
 
 
-const emptyForm = {
+const emptyForm: Omit<Employee, "id"> = {
   name: "",
   email: "",
   department: "",
   role: "",
   status: "Active",
 };
-
 
 export default function AddEmployeeModal({
   open,
@@ -66,18 +64,19 @@ export default function AddEmployeeModal({
 
 
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+) => {
+  const { name, value } = e.target;
 
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-
-  };
-
-
+  setFormData((prev) => ({
+    ...prev,
+    [name]:
+      name === "status"
+        ? (value as "Active" | "Inactive")
+        : value,
+  }));
+};
 
   const handleSubmit = (e: React.FormEvent) => {
 

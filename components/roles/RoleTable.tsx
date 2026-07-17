@@ -1,209 +1,209 @@
 "use client";
 
-import { Pencil, Trash2, Plus } from "lucide-react";
 import { useState } from "react";
+import {
+  Search,
+  ChevronDown,
+  ChevronUp,
+  Users,
+} from "lucide-react";
 
-import RoleModal, { Role } from "./AddRoleModal";
-
+import { useEmployee } from "@/context/Employeecontext";
 
 export default function RoleTable() {
-  const [roles, setRoles] = useState<Role[]>([
-    {
-      id: 1,
-      name: "Admin",
-      description: "Full system access",
-      users: 3,
-      permissions: 24,
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "HR Manager",
-      description: "Manage employees and leaves",
-      users: 5,
-      permissions: 15,
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "Employee",
-      description: "Basic employee access",
-      users: 42,
-      permissions: 8,
-      status: "Active",
-    },
-  ]);
+  const { employees } = useEmployee();
 
-  const [openModal, setOpenModal] = useState(false);
-  const [editRole, setEditRole] = useState<Role | null>(null);
+  const [search, setSearch] = useState("");
+  const [openRole, setOpenRole] = useState<string | null>(null);
 
-  const saveRole = (role: Role) => {
-
-    if (editRole) {
-
-      setRoles(
-        roles.map((r) => (r.id === role.id ? role : r))
-      );
-
-      setEditRole(null);
-
-    } else {
-
-      setRoles([...roles, role]);
-
+  const roleMap = employees.reduce((acc, employee) => {
+    if (!acc[employee.role]) {
+      acc[employee.role] = [];
     }
 
-  };
+    acc[employee.role].push(employee);
 
-  const deleteRole = (id: number) => {
-    setRoles(roles.filter((role) => role.id !== id));
-  };
+    return acc;
+  }, {} as Record<string, typeof employees>);
+
+  const filteredRoles = Object.entries(roleMap).filter(([role]) =>
+    role.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="bg-white rounded-2xl shadow p-4 sm:p-6 border border-blue-100">
+    <div className="bg-white rounded-2xl shadow p-6 border border-blue-100">
 
-      <RoleModal
-        open={openModal}
-        onClose={() => {
-          setOpenModal(false);
-          setEditRole(null);
-        }}
-        saveRole={saveRole}
-        editRole={editRole}
-      />
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-[#0000ff]">
+          Roles & Permissions
+        </h1>
 
-      <div className="mb-6 flex items-start justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-[#0000ff]">Roles & Permissions</h1>
-          <p className="text-sm sm:text-base text-gray-500">
-            Manage user roles and access control
-          </p>
-        </div>
-
-        <button
-          onClick={() => {
-            setEditRole(null);
-            setOpenModal(true);
-          }}
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 text-sm shrink-0"
-        >
-          <Plus size={18} />
-          Add Role
-        </button>
+        <p className="text-gray-500 mt-1">
+          Manage employee roles
+        </p>
       </div>
 
-      {/* Desktop / tablet table view (md and up) */}
-      <div className="hidden md:block overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-blue-100 bg-blue-50/50 text-left">
-              <th className="py-4 px-2 text-[#0000ff]">Role Name</th>
-              <th className="text-[#0000ff]">Description</th>
-              <th className="text-[#0000ff]">Users</th>
-              <th className="text-[#0000ff]">Permissions</th>
-              <th className="text-[#0000ff]">Status</th>
-              <th className="text-[#0000ff]">Action</th>
-            </tr>
-          </thead>
+      {/* Search */}
+      <div className="relative mb-6">
+        <Search
+          size={18}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+        />
 
-          <tbody>
-            {roles.map((role) => (
-              <tr key={role.id} className="border-b border-blue-50 hover:bg-blue-50/40 transition-colors">
-                <td className="py-4 px-2 font-semibold">{role.name}</td>
-                <td>{role.description}</td>
-                <td>{role.users}</td>
-                <td>{role.permissions}</td>
-                <td>
-                  <span className="bg-blue-100 text-[#0000ff] px-3 py-1 rounded-full text-sm">
-                    {role.status}
-                  </span>
-                </td>
-
-                <td className="flex gap-3 py-4">
-                  <button
-                    onClick={() => {
-                      setEditRole(role);
-                      setOpenModal(true);
-                    }}
-                    className="bg-blue-100 hover:bg-blue-200 transition-colors text-[#0000ff] p-2 rounded-lg"
-                  >
-                    <Pencil size={18} />
-                  </button>
-
-                  <button
-                    onClick={() => deleteRole(role.id)}
-                    className="bg-blue-50 hover:bg-red-100 transition-colors text-red-600 p-2 rounded-lg"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-
-            {roles.length === 0 && (
-              <tr>
-                <td colSpan={6} className="py-6 text-center text-gray-400">
-                  No roles found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        <input
+          type="text"
+          placeholder="Search role..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="
+            w-full
+            border
+            rounded-xl
+            pl-10
+            pr-4
+            py-3
+            outline-none
+            focus:ring-2
+            focus:ring-blue-500
+          "
+        />
       </div>
 
-      {/* Mobile card view (below md) */}
-      <div className="md:hidden space-y-4">
-        {roles.map((role) => (
-          <div key={role.id} className="border border-blue-100 rounded-xl p-4 flex flex-col gap-3 bg-white shadow-sm">
-            <div className="flex justify-between items-start gap-3">
-              <div>
-                <h3 className="font-semibold">{role.name}</h3>
-                <p className="text-sm text-gray-500">{role.description}</p>
-              </div>
+      {/* Roles */}
+      <div className="space-y-4">
 
-              <span className="bg-blue-100 text-[#0000ff] px-3 py-1 rounded-full text-xs shrink-0">
-                {role.status}
-              </span>
-            </div>
+        {filteredRoles.length === 0 && (
 
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div>
-                <p className="text-gray-400">Users</p>
-                <p className="font-medium">{role.users}</p>
-              </div>
-              <div>
-                <p className="text-gray-400">Permissions</p>
-                <p className="font-medium">{role.permissions}</p>
-              </div>
-            </div>
-
-            <div className="flex gap-3 pt-1">
-              <button
-                onClick={() => {
-                  setEditRole(role);
-                  setOpenModal(true);
-                }}
-                className="flex-1 flex items-center justify-center gap-2 bg-blue-100 hover:bg-blue-200 transition-colors text-[#0000ff] p-2 rounded-lg text-sm"
-              >
-                <Pencil size={16} />
-                Edit
-              </button>
-
-              <button
-                onClick={() => deleteRole(role.id)}
-                className="flex-1 flex items-center justify-center gap-2 bg-blue-50 hover:bg-red-100 transition-colors text-red-600 p-2 rounded-lg text-sm"
-              >
-                <Trash2 size={16} />
-                Delete
-              </button>
-            </div>
+          <div className="text-center py-10 text-gray-500">
+            No roles found.
           </div>
+
+        )}
+
+        {filteredRoles.map(([role, members]) => (
+
+          <div
+            key={role}
+            className="border rounded-xl overflow-hidden"
+          >
+
+            <button
+              onClick={() =>
+                setOpenRole(openRole === role ? null : role)
+              }
+              className="
+                w-full
+                flex
+                justify-between
+                items-center
+                p-4
+                hover:bg-blue-50
+              "
+            >
+
+              <div className="flex items-center gap-3">
+
+                <div className="bg-blue-100 p-2 rounded-lg">
+
+                  <Users
+                    size={20}
+                    className="text-blue-600"
+                  />
+
+                </div>
+
+                <div className="text-left">
+
+                  <h2 className="font-semibold text-lg">
+                    {role}
+                  </h2>
+
+                  <p className="text-sm text-gray-500">
+                    {members.length} Employee(s)
+                  </p>
+
+                </div>
+
+              </div>
+
+              {openRole === role ? (
+                <ChevronUp />
+              ) : (
+                <ChevronDown />
+              )}
+
+            </button>
+
+            {openRole === role && (
+
+              <div className="border-t bg-gray-50">
+
+                {members.map((employee) => (
+
+                  <div
+                    key={employee.id}
+                    className="
+                      flex
+                      justify-between
+                      items-center
+                      px-5
+                      py-4
+                      border-b
+                      last:border-b-0
+                    "
+                  >
+
+                    <div>
+
+                      <h3 className="font-semibold">
+                        {employee.name}
+                      </h3>
+
+                      <p className="text-sm text-gray-500">
+                        {employee.email}
+                      </p>
+
+                    </div>
+
+                    <div className="text-right">
+
+                      <p className="font-medium">
+                        {employee.department}
+                      </p>
+
+                      <span
+                        className={`
+                          text-xs
+                          px-3
+                          py-1
+                          rounded-full
+                          ${
+                            employee.status === "Active"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
+                          }
+                        `}
+                      >
+                        {employee.status}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            )}
+
+          </div>
+
         ))}
 
-        {roles.length === 0 && (
-          <p className="py-6 text-center text-gray-400">No roles found.</p>
-        )}
       </div>
+
     </div>
   );
 }

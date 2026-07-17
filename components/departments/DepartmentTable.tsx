@@ -1,274 +1,250 @@
 "use client";
 
-import { Building2, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
-import AddDepartmentModal from "./AddDepartmentModal";
-
-interface Department {
-  id: number;
-  name: string;
-  manager: string;
-  employees: number;
-  status: string;
-}
+import { Building2, Search, ChevronDown, ChevronUp } from "lucide-react";
+import { useEmployee } from "@/context/Employeecontext";
 
 export default function DepartmentTable() {
-  const [open, setOpen] = useState(false);
-  const [editDept, setEditDept] = useState<Department | null>(null);
+  const { employees } = useEmployee();
+
   const [search, setSearch] = useState("");
+  const [openDepartment, setOpenDepartment] = useState<string | null>(null);
 
-  const [departments, setDepartments] = useState<Department[]>([
-    {
-      id: 1,
-      name: "IT",
-      manager: "Ahmed Khan",
-      employees: 12,
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "HR",
-      manager: "Sara Ahmed",
-      employees: 5,
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "Design",
-      manager: "Usman Raza",
-      employees: 8,
-      status: "Active",
-    },
-  ]);
+  // Department Wise Group
+  const departmentMap = employees.reduce((acc, employee) => {
+    if (!acc[employee.department]) {
+      acc[employee.department] = [];
+    }
 
-  // Add Department
-  const addDepartment = (data: { name: string; manager: string }) => {
-    setDepartments((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        name: data.name,
-        manager: data.manager,
-        employees: 0,
-        status: "Active",
-      },
-    ]);
+    acc[employee.department].push(employee);
 
-    setOpen(false);
-  };
+    return acc;
+  }, {} as Record<string, typeof employees>);
 
-  // Delete Department (with confirmation so nothing is removed by accident)
-  const deleteDepartment = (id: number) => {
-    const dept = departments.find((d) => d.id === id);
-    if (!dept) return;
-
-    const confirmed = window.confirm(
-      `Delete "${dept.name}" department? This cannot be undone.`
-    );
-    if (!confirmed) return;
-
-    setDepartments((prev) => prev.filter((d) => d.id !== id));
-  };
-
-  // Open Edit
-  const editDepartment = (dept: Department) => {
-    setEditDept(dept);
-    setOpen(true);
-  };
-
-  // Update Department
-  const updateDepartment = (data: { name: string; manager: string }) => {
-    setDepartments((prev) =>
-      prev.map((dept) =>
-        dept.id === editDept?.id
-          ? {
-              ...dept,
-              name: data.name,
-              manager: data.manager,
-            }
-          : dept
-      )
-    );
-
-    setEditDept(null);
-    setOpen(false);
-  };
-
-  const filteredDepartments = departments.filter((dept) =>
-    [dept.name, dept.manager]
-      .join(" ")
-      .toLowerCase()
-      .includes(search.toLowerCase())
+  // Search Filter
+  const filteredDepartments = Object.entries(departmentMap).filter(
+    ([department]) =>
+      department.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <div className="bg-white rounded-2xl shadow p-4 sm:p-6 border border-blue-100">
+    <div className="space-y-6">
+
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+
+      <div className="flex flex-col md:flex-row justify-between gap-4">
+
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-[#0000ff]">
+
+          <h1 className="text-3xl font-bold text-blue-700">
             Departments
           </h1>
-          <p className="text-sm sm:text-base text-gray-500">
-            Manage company departments
+
+          <p className="text-gray-500">
+            Department wise employee management
           </p>
+
         </div>
 
-        <button
-          onClick={() => {
-            setEditDept(null);
-            setOpen(true);
-          }}
-          className="bg-[#0000ff] hover:bg-blue-700 transition-colors text-white px-4 sm:px-5 py-3 rounded-xl text-sm sm:text-base w-full sm:w-auto font-medium"
+        <div className="relative w-full md:w-80">
+
+          <Search
+            size={18}
+            className="absolute left-3 top-3.5 text-gray-400"
+          />
+
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search Department..."
+            className="
+              w-full
+              border
+              rounded-xl
+              pl-10
+              pr-4
+              py-3
+              outline-none
+              focus:ring-2
+              focus:ring-blue-500
+            "
+          />
+
+        </div>
+
+      </div>
+
+      {/* Department Cards */}
+
+      <div className="space-y-5">
+              {filteredDepartments.map(([department, deptEmployees]) => (
+        <div
+          key={department}
+          className="bg-white rounded-2xl border shadow-sm overflow-hidden"
         >
-          + Add Department
-        </button>
-      </div>
+          {/* Card Header */}
 
-      {/* Search */}
-      <input
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder="Search department..."
-        className="w-full border border-blue-200 rounded-xl px-4 py-3 mb-6 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#0000ff] focus:border-transparent"
-      />
-
-      {/* Desktop / tablet table view (md and up) */}
-      <div className="hidden md:block overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="text-left border-b border-blue-100 bg-blue-50/50">
-              <th className="py-4 px-2 text-[#0000ff] font-semibold">
-                Department
-              </th>
-              <th className="text-[#0000ff] font-semibold">Manager</th>
-              <th className="text-[#0000ff] font-semibold">Employees</th>
-              <th className="text-[#0000ff] font-semibold">Status</th>
-              <th className="text-[#0000ff] font-semibold">Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {filteredDepartments.map((dept) => (
-              <tr
-                key={dept.id}
-                className="border-b border-blue-50 hover:bg-blue-50/40 transition-colors"
-              >
-                <td className="py-4 px-2 flex gap-3 items-center">
-                  <div className="bg-blue-100 p-2 rounded-lg shrink-0">
-                    <Building2 size={20} className="text-[#0000ff]" />
-                  </div>
-                  <span className="font-semibold">{dept.name}</span>
-                </td>
-
-                <td>{dept.manager}</td>
-                <td>{dept.employees}</td>
-
-                <td>
-                  <span className="bg-blue-100 text-[#0000ff] px-3 py-1 rounded-full text-sm">
-                    {dept.status}
-                  </span>
-                </td>
-
-                <td className="flex gap-3 py-4">
-                  <button
-                    onClick={() => editDepartment(dept)}
-                    className="bg-blue-100 hover:bg-blue-200 transition-colors p-2 rounded-lg text-[#0000ff]"
-                    aria-label={`Edit ${dept.name}`}
-                  >
-                    <Pencil size={18} />
-                  </button>
-
-                  <button
-                    onClick={() => deleteDepartment(dept.id)}
-                    className="bg-blue-50 hover:bg-red-100 transition-colors p-2 rounded-lg text-red-600"
-                    aria-label={`Delete ${dept.name}`}
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-
-            {filteredDepartments.length === 0 && (
-              <tr>
-                <td colSpan={5} className="py-6 text-center text-gray-400">
-                  No departments found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Mobile card view (below md) */}
-      <div className="md:hidden space-y-4">
-        {filteredDepartments.map((dept) => (
           <div
-            key={dept.id}
-            className="border border-blue-100 rounded-xl p-4 flex flex-col gap-3 bg-white shadow-sm"
+            onClick={() =>
+              setOpenDepartment(
+                openDepartment === department ? null : department
+              )
+            }
+            className="
+              flex
+              justify-between
+              items-center
+              p-5
+              cursor-pointer
+              hover:bg-blue-50
+              transition
+            "
           >
-            <div className="flex justify-between items-start gap-3">
-              <div className="flex gap-3 items-center">
-                <div className="bg-blue-100 p-2 rounded-lg shrink-0">
-                  <Building2 size={20} className="text-[#0000ff]" />
-                </div>
-                <span className="font-semibold">{dept.name}</span>
+            <div className="flex items-center gap-4">
+              <div className="bg-blue-100 p-3 rounded-xl">
+                <Building2
+                  size={24}
+                  className="text-blue-700"
+                />
               </div>
 
-              <span className="bg-blue-100 text-[#0000ff] px-3 py-1 rounded-full text-xs shrink-0">
-                {dept.status}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 text-sm">
               <div>
-                <p className="text-gray-400">Manager</p>
-                <p className="font-medium">{dept.manager}</p>
-              </div>
-              <div>
-                <p className="text-gray-400">Employees</p>
-                <p className="font-medium">{dept.employees}</p>
+                <h2 className="text-xl font-bold">
+                  {department}
+                </h2>
+
+                <p className="text-gray-500">
+                  Total Employees : {deptEmployees.length}
+                </p>
+
+                <p className="text-sm text-gray-400">
+                  Manager : {deptEmployees[0]?.name}
+                </p>
               </div>
             </div>
 
-            <div className="flex gap-3 pt-1">
-              <button
-                onClick={() => editDepartment(dept)}
-                className="flex-1 flex items-center justify-center gap-2 bg-blue-100 hover:bg-blue-200 transition-colors p-2 rounded-lg text-[#0000ff] text-sm"
-              >
-                <Pencil size={16} />
-                Edit
-              </button>
-
-              <button
-                onClick={() => deleteDepartment(dept.id)}
-                className="flex-1 flex items-center justify-center gap-2 bg-blue-50 hover:bg-red-100 transition-colors p-2 rounded-lg text-red-600 text-sm"
-              >
-                <Trash2 size={16} />
-                Delete
-              </button>
-            </div>
+            {openDepartment === department ? (
+              <ChevronUp className="text-blue-700" />
+            ) : (
+              <ChevronDown className="text-blue-700" />
+            )}
           </div>
-        ))}
 
-        {filteredDepartments.length === 0 && (
-          <p className="py-6 text-center text-gray-400">
-            No departments found.
+          {/* Employee List */}
+
+          {openDepartment === department && (
+            <div className="border-t bg-gray-50 p-5">
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                {deptEmployees.map((employee) => (
+                  <div
+                    key={employee.id}
+                    className="
+                      bg-white
+                      rounded-xl
+                      border
+                      p-4
+                      hover:shadow-md
+                      transition
+                    "
+                  >
+                    <div className="flex items-center gap-3">
+
+                      <div
+                        className="
+                          w-12
+                          h-12
+                          rounded-full
+                          bg-blue-600
+                          text-white
+                          flex
+                          items-center
+                          justify-center
+                          font-bold
+                          text-lg
+                        "
+                      >
+                        {employee.name.charAt(0)}
+                      </div>
+
+                      <div>
+
+                        <h3 className="font-semibold">
+                          {employee.name}
+                        </h3>
+
+                        <p className="text-sm text-gray-500">
+                          {employee.email}
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <div className="mt-4 space-y-1">
+
+                      <p className="text-sm">
+                        <span className="font-semibold">
+                          Role :
+                        </span>{" "}
+                        {employee.role}
+                      </p>
+
+                      <p className="text-sm">
+                        <span className="font-semibold">
+                          Status :
+                        </span>{" "}
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs ${
+                            employee.status === "Active"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
+                          }`}
+                        >
+                          {employee.status}
+                        </span>
+                      </p>
+
+                    </div>
+
+                  </div>
+                ))}
+
+              </div>
+
+            </div>
+          )}
+        </div>
+      ))}
+            </div>
+
+      {filteredDepartments.length === 0 && (
+        <div
+          className="
+            bg-white
+            rounded-2xl
+            border
+            p-12
+            text-center
+            shadow-sm
+          "
+        >
+          <Building2
+            size={60}
+            className="mx-auto text-gray-300 mb-4"
+          />
+
+          <h2 className="text-2xl font-semibold text-gray-700">
+            No Department Found
+          </h2>
+
+          <p className="text-gray-500 mt-2">
+            No employees are available in this department.
           </p>
-        )}
-      </div>
-
-      {open && (
-        <AddDepartmentModal
-          onClose={() => {
-            setOpen(false);
-            setEditDept(null);
-          }}
-          addDepartment={editDept ? updateDepartment : addDepartment}
-          editData={editDept}
-        />
+        </div>
       )}
+
     </div>
   );
 }
